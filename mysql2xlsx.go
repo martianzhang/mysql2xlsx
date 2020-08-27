@@ -36,6 +36,7 @@ func parseFlag() error {
 	mysqlDatabase := flag.String("d", "", "mysql database name")
 	mysqlPort := flag.String("P", "3306", "mysql port")
 	mysqlCharset := flag.String("c", "utf8mb4", "mysql default charset")
+
 	mysqlQuery := flag.String("q", "", "select query")
 	fileName := flag.String("f", "", "xlsx file name")
 	flag.Parse()
