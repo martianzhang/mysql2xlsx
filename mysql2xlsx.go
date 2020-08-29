@@ -55,13 +55,13 @@ func parseFlag() error {
 		fmt.Println("Query (end with '; + <Enter>'):")
 		reader := bufio.NewReader(os.Stdin)
 		for {
-			tmpSql, err := reader.ReadString('\n')
+			line, err := reader.ReadString('\n')
 			if err != nil {
 				return err
 			}
-			*mysqlQuery = *mysqlQuery + tmpSql
-			tmpSql = strings.TrimSpace(tmpSql)
-			if tmpSql[len(tmpSql)-1] == ';' {
+			*mysqlQuery = *mysqlQuery + line
+			line = strings.TrimSpace(line)
+			if line[len(line)-1] == ';' {
 				break
 			}
 		}
