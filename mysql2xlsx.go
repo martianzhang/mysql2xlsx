@@ -61,7 +61,7 @@ func parseFlag() error {
 			}
 			*mysqlQuery = *mysqlQuery + line
 			line = strings.TrimSpace(line)
-			if line[len(line)-1] == ';' {
+			if len(line) > 1 && line[len(line)-1] == ';' {
 				break
 			}
 		}
