@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"database/sql"
+	"encoding/csv"
 	"flag"
 	"fmt"
 	"os"
@@ -149,6 +150,49 @@ func save2xlsx(filePath string, rows *sql.Rows) error {
 	return file.Save(filePath)
 }
 
+func save2csv(filePath string, rows *sql.Rows) error {
+	file, err := os.Create(filePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	// set table header with column name
+	columns, err := rows.Columns()
+	if err != nil {
+		return err
+	}
+	w.Write(columns)
+
+	// set every table rows
+	scanArgs := make([]interface{}, len(columns))
+	values := make([][]byte, len(columns))
+	for i := range values {
+		scanArgs[i] = &values[i]
+	}
+	for rows.Next() {
+		columns := make([]sql.NullString, len(columns))
+		cols := make([]interface{}, len(columns))
+		for i := range columns {
+			cols[i] = &columns[i]
+		}
+
+		if err := rows.Scan(cols...); err != nil {
+			return err
+		}
+
+		values := make([]string, len(columns))
+		for i, col := range columns {
+			values[i] = col.String
+		}
+		w.Write(values)
+	}
+	return err
+}
+
 func main() {
 	// parse config
 	if err := parseFlag(); err != nil {
@@ -164,7 +208,11 @@ func main() {
 	}
 
 	// save result into xlsx files
-	err = save2xlsx(cfg.File, rows)
+	if strings.HasSuffix(strings.ToLower(cfg.File), ".csv") {
+		err = save2csv(cfg.File, rows)
+	} else {
+		err = save2xlsx(cfg.File, rows)
+	}
 	if err != nil {
 		fmt.Println(err.Error())
 	}
