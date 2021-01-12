@@ -13,6 +13,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/howeyc/gopass"
 	"github.com/tealeg/xlsx"
+	ini "gopkg.in/ini.v1"
 )
 
 type config struct {
@@ -38,10 +39,24 @@ func parseFlag() error {
 	mysqlDatabase := flag.String("d", "", "mysql database name")
 	mysqlPort := flag.String("P", "3306", "mysql port")
 	mysqlCharset := flag.String("c", "utf8mb4", "mysql default charset")
+	mysqlDefaultsExtraFile := flag.String("defaults-extra-file", "", "mysql --defaults-extra-file")
 
 	mysqlQuery := flag.String("q", "", "select query")
 	fileName := flag.String("f", "", "xlsx file name")
 	flag.Parse()
+
+	if *mysqlDefaultsExtraFile != "" {
+		cfg, err := parseDefaultsExtraFile(*mysqlDefaultsExtraFile)
+		if err != nil {
+			return err
+		}
+		if cfg.Password != "" {
+			*mysqlPassword = cfg.Password
+		}
+		if cfg.User != "" {
+			*mysqlUser = cfg.User
+		}
+	}
 
 	if *mysqlPassword == "" {
 		fmt.Print("Password:")
@@ -199,6 +214,23 @@ func save2csv(filePath string, rows *sql.Rows) error {
 		w.Write(values)
 	}
 	return err
+}
+
+type mysqlConfig struct {
+	User     string `toml:"mysql"`
+	Password string `toml:"password"`
+}
+
+// parseDefaultsExtraFile dealwith --defaults-extra-file arg
+func parseDefaultsExtraFile(file string) (mysqlConfig, error) {
+	var cfg mysqlConfig
+	c, err := ini.Load(file)
+	if err != nil {
+		return cfg, err
+	}
+	cfg.User = c.Section("mysql").Key("user").String()
+	cfg.Password = c.Section("mysql").Key("password").String()
+	return cfg, err
 }
 
 func main() {
