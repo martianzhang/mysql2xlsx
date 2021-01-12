@@ -6,6 +6,7 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -64,6 +65,13 @@ func parseFlag() error {
 			line = strings.TrimSpace(line)
 			if len(line) > 1 && line[len(line)-1] == ';' {
 				break
+			}
+		}
+	} else {
+		if _, err := os.Stat(*mysqlQuery); err == nil {
+			buf, err := ioutil.ReadFile(*mysqlQuery)
+			if err == nil {
+				*mysqlQuery = string(buf)
 			}
 		}
 	}
