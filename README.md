@@ -1,6 +1,6 @@
-## Introduction
+# Introduction
 
-Save SQL query result into `xlsx` format file.
+Save SQL query result into `xlsx`, `csv` file or print as `ascii` table.
 
 ## Install
 
@@ -19,7 +19,7 @@ GOOS={GOOS} GOARCH={GOARCH} go build
 ## Example
 
 ```bash
-./mysql2xlsx  -h 127.0.0.1 -P 3306 -d dbname -u root -f result.xlsx -q "select * from tbl"
+./mysql2xlsx  -h 127.0.0.1 -P 3306 -d database -u root -f result.xlsx -q "select * from tbl"
 Password:<hidden input>
 save data into file: '/path/to/mysql2xlsx/result.xlsx'
 ```
@@ -30,19 +30,21 @@ save data into file: '/path/to/mysql2xlsx/result.xlsx'
 ./mysql2xlsx --help
 Usage of ./mysql2xlsx:
   -P string
-    	mysql port (default "3306")
+        mysql port (default "3306")
   -c string
-    	mysql default charset (default "utf8mb4")
+        mysql default charset (default "utf8mb4")
   -d string
-    	mysql database name
+        mysql database name
+  -defaults-extra-file string
+        mysql --defaults-extra-file arg
   -f string
-    	xlsx file name
+        save query result into file, default to stdout
   -h string
-    	mysql host (default "localhost")
+        mysql host (default "localhost")
   -p string
-    	mysql password
+        mysql password
   -q string
-    	select query
+        select query
   -u string
-    	mysql user name
+        mysql user name
 ```
