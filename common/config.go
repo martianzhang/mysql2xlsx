@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/howeyc/gopass"
-	"gopkg.in/ini.v1"
+	ini "gopkg.in/ini.v1"
 )
 
 // Config mysql2xlsx config
@@ -126,9 +126,9 @@ func parseDefaultsExtraFile(file string) (Config, error) {
 	}
 
 	// get config from [mysql] section
-	cfg.User = c.Section("mysql").Key("user").String()
-	cfg.Password = c.Section("mysql").Key("password").String()
-	cfg.Charset = c.Section("mysql").Key("default-character-set").String()
+	cfg.User = c.Section("client").Key("user").String()
+	cfg.Password = c.Section("client").Key("password").String()
+	cfg.Charset = c.Section("client").Key("default-character-set").String()
 
 	return cfg, err
 }
