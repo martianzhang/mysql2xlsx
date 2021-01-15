@@ -2,8 +2,16 @@ package common
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/tealeg/xlsx"
+)
+
+// Excel limits
+const (
+	ExcelMaxRows      = 1048576
+	ExcelMaxColumns   = 16384
+	ExcelMaxCellChars = 32767
 )
 
 // saveRows2XLSX save rows result into xlsx format file
@@ -20,6 +28,9 @@ func saveRows2XLSX(filePath string, rows *sql.Rows) error {
 	if err != nil {
 		return err
 	}
+	if len(columns) > ExcelMaxColumns {
+		return fmt.Errorf("excel max columns(%d) exceeded", ExcelMaxColumns)
+	}
 	sheetHeader := sheet.AddRow()
 	for _, name := range columns {
 		cell := sheetHeader.AddCell()
@@ -32,11 +43,17 @@ func saveRows2XLSX(filePath string, rows *sql.Rows) error {
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
-	for rows.Next() {
+	for i := 1; rows.Next(); i++ {
+		if i > ExcelMaxRows {
+			return fmt.Errorf("excel max rows(%d) exceeded", ExcelMaxRows)
+		}
 		rows.Scan(scanArgs...)
 		sheetRow := sheet.AddRow()
 		for _, v := range values {
 			cell := sheetRow.AddCell()
+			if len(v) > ExcelMaxCellChars {
+				return fmt.Errorf("excel max cell characters(%d) exceeded", ExcelMaxCellChars)
+			}
 			cell.Value = string(v)
 		}
 	}

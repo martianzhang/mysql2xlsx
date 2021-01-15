@@ -1,10 +1,15 @@
 package main
 
 import (
+	"runtime"
+
 	"mysql2xlsx/common"
 )
 
 func main() {
+	// limit cpu usage
+	runtime.GOMAXPROCS(1)
+
 	// parse config
 	cfg, err := common.ParseFlag()
 	if err != nil {
