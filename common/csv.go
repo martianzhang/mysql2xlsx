@@ -4,10 +4,15 @@ import (
 	"database/sql"
 	"encoding/csv"
 	"os"
+	"runtime"
+	"strings"
 
 	// "database/sql"
 	_ "github.com/go-sql-driver/mysql"
 )
+
+// UTF8BOM BOM HEADER
+var UTF8BOM = []byte{0xEF, 0xBB, 0xBF}
 
 // saveRows2CSV save rows result into csv format file
 func saveRows2CSV(filePath string, rows *sql.Rows) error {
@@ -16,6 +21,18 @@ func saveRows2CSV(filePath string, rows *sql.Rows) error {
 		return err
 	}
 	defer file.Close()
+
+	// 兼容 Windows 系统，文件头写入 UTF8 BOM，防止中文乱码。
+	// windows 环境下导出的 csv 文件默认添加 UTF8 BOM。
+	// 添加 BOM 对 less, awk 等 *nix 系统命令并不友好，因此仅对特定的文件名生效。
+	// Linux 环境删除文件 UTF8 BOM 头命令：dos2unix xxx.csv
+	if runtime.GOOS == "windows" ||
+		strings.HasSuffix(filePath, ".utf8.csv") {
+		_, err = file.Write(UTF8BOM)
+		if err != nil {
+			return err
+		}
+	}
 
 	w := csv.NewWriter(file)
 	defer w.Flush()
