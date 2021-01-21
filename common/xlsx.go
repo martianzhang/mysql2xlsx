@@ -15,7 +15,7 @@ const (
 )
 
 // saveRows2XLSX save rows result into xlsx format file
-func saveRows2XLSX(filePath string, rows *sql.Rows) error {
+func saveRows2XLSX(rows *sql.Rows) error {
 	file := xlsx.NewFile()
 	// create new sheet
 	sheet, err := file.AddSheet("result")
@@ -59,5 +59,5 @@ func saveRows2XLSX(filePath string, rows *sql.Rows) error {
 	}
 
 	// save to file
-	return file.Save(filePath)
+	return file.Save(Cfg.File)
 }

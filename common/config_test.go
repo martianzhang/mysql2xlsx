@@ -15,12 +15,12 @@ func init() {
 	_, filename, _, _ := runtime.Caller(0)
 	testPath = filepath.Dir(filepath.Dir(filename))
 
-	testConfig = Config{
+	Cfg = Config{
 		User:     "root",
 		Password: "123456",
 		Host:     "127.0.0.1",
 		Port:     "3306",
-		Database: "test",
+		Database: "information_schema",
 		Charset:  "utf8mb4",
 
 		Query: "select 1",
@@ -28,15 +28,15 @@ func init() {
 }
 
 func TestParseDefaultsExtraFile(t *testing.T) {
-	_, err := parseDefaultsExtraFile(testPath + "/test/my.cnf")
+	err := parseDefaultsExtraFile(testPath + "/test/my.cnf")
 	if err != nil {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 }
 
-func TestParseFlagParseFlag(t *testing.T) {
-	_, err := ParseFlag()
+func TestParseFlag(t *testing.T) {
+	err := ParseFlag()
 	if err != nil && err != io.EOF {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 }

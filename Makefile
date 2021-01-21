@@ -57,8 +57,8 @@ fmt: go_version_check
 		gofmt -l -s -w $$d/*.go || ret=$$? ; \
 	done ; exit $$ret
 
-.PHONY: docker
-docker:
+.PHONY: docker-mysql
+docker-mysql:
 	@echo "$(CGREEN)Build mysql test environment ...$(CEND)"
 	@docker stop xlsx-mysql 2>/dev/null || true
 	@docker wait xlsx-mysql 2>/dev/null >/dev/null || true
@@ -108,3 +108,13 @@ cover: test
 			{print "$(CGREEN)"$$0"%$(CEND)"} \
 		else \
 			{print "$(CYELLOW)"$$0"%$(CEND)"}}'
+
+.PHONY: test-cli
+test-cli: build
+	@./bin/mysql2xlsx -user root --password 123456 \
+	-query 'select "中文", "english"' \
+	-file test.csv
+
+.PHONY: clean
+clean:
+	git clean -x -f

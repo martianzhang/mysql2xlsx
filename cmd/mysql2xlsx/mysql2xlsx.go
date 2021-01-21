@@ -11,19 +11,19 @@ func main() {
 	runtime.GOMAXPROCS(1)
 
 	// parse config
-	cfg, err := common.ParseFlag()
+	err := common.ParseFlag()
 	if err != nil {
 		panic(err.Error())
 	}
 
 	// execute sql and get all result rows
-	rows, err := common.GetRows(cfg)
+	rows, err := common.GetRows()
 	if err != nil {
 		panic(err.Error())
 	}
 
 	// save rows result
-	err = common.SaveRows(cfg.File, rows)
+	err = common.SaveRows(rows)
 	if err != nil {
 		panic(err.Error())
 	}

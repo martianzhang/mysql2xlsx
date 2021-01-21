@@ -5,14 +5,15 @@ import (
 )
 
 func TestSaveRows2ELSX(t *testing.T) {
+	Cfg.File = testPath + "/test/TestSaveRows2ELSX.xlsx"
 
-	rows, err := GetRows(testConfig)
+	rows, err := GetRows()
 	if err != nil {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 
-	err = saveRows2XLSX(testPath+"/test/1.xlsx", rows)
+	err = saveRows2XLSX(rows)
 	if err != nil {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 }

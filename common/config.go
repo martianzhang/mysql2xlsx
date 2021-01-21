@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/howeyc/gopass"
@@ -25,45 +26,68 @@ type Config struct {
 	// other config
 	Query string // select query
 	File  string // storage file abs path
+	BOM   bool   // add BOM file header
 }
 
-// ParseFlag parse cmd flags
-func ParseFlag() (Config, error) {
-	var cfg Config
+var Cfg Config
 
-	mysqlHost := flag.String("h", "localhost", "mysql host")
-	mysqlUser := flag.String("u", "", "mysql user name")
-	mysqlPassword := flag.String("p", "", "mysql password")
-	mysqlDatabase := flag.String("d", "", "mysql database name")
-	mysqlPort := flag.String("P", "3306", "mysql port")
-	mysqlCharset := flag.String("c", "utf8mb4", "mysql default charset")
+// ParseFlag parse cmd flags
+func ParseFlag() error {
+
+	mysqlHost := flag.String("host", "127.0.0.1", "mysql host")
+	mysqlUser := flag.String("user", "", "mysql user name")
+	mysqlPassword := flag.String("password", "", "mysql password")
+	mysqlDatabase := flag.String("database", "information_schema", "mysql database name")
+	mysqlPort := flag.String("port", "3306", "mysql port")
+	mysqlCharset := flag.String("charset", "utf8mb4", "mysql default charset")
 	mysqlDefaultsExtraFile := flag.String("defaults-extra-file", "", "mysql --defaults-extra-file arg")
 
-	mysqlQuery := flag.String("q", "", "select query")
-	fileName := flag.String("f", "", "save query result into file, default to stdout")
+	mysqlQuery := flag.String("query", "", "select query")
+	filename := flag.String("file", "", `save query result into file, (default "stdout")`)
+	var bom *bool
+	if runtime.GOOS != "windows" {
+		bom = flag.Bool("bom", false, "csv file with UTF8 BOM")
+	} else {
+		*bom = true
+	}
 	flag.Parse()
 
 	if *mysqlDefaultsExtraFile != "" {
-		cfg, err := parseDefaultsExtraFile(*mysqlDefaultsExtraFile)
+		err := parseDefaultsExtraFile(*mysqlDefaultsExtraFile)
 		if err != nil {
-			return cfg, err
+			return err
 		}
-		if cfg.Password != "" {
-			*mysqlPassword = cfg.Password
-		}
-		if cfg.User != "" {
-			*mysqlUser = cfg.User
-		}
-		if cfg.Charset != "" {
-			*mysqlCharset = cfg.Charset
-		}
+	}
+
+	if Cfg.User != "" {
+		*mysqlUser = Cfg.User
+	}
+	if *mysqlUser == "" {
+		flag.PrintDefaults()
+		os.Exit(0)
+	}
+
+	if Cfg.Password != "" {
+		*mysqlPassword = Cfg.Password
+	}
+
+	if Cfg.Charset != "" {
+		*mysqlCharset = Cfg.Charset
+	}
+
+	if !strings.HasPrefix(strings.ToLower(*mysqlCharset), "utf") {
+		*bom = false
+	}
+
+	if Cfg.Query != "" {
+		*mysqlQuery = Cfg.Query
 	}
 
 	if *mysqlPassword == "" {
 		fmt.Print("Password:")
 		password, err := gopass.GetPasswd()
 		if err != nil {
-			return cfg, err
+			return err
 		}
 		*mysqlPassword = strings.TrimSpace(string(password))
 	}
@@ -75,7 +99,7 @@ func ParseFlag() (Config, error) {
 		for {
 			line, err := reader.ReadString('\n')
 			if err != nil {
-				return cfg, err
+				return err
 			}
 			*mysqlQuery = *mysqlQuery + line
 			line = strings.TrimSpace(line)
@@ -92,17 +116,22 @@ func ParseFlag() (Config, error) {
 		}
 	}
 
+	*filename = strings.TrimSpace(*filename)
+	if *filename == "" {
+		*filename = "stdout"
+	}
+
 	// use abs path
 	pwd, err := os.Getwd()
 	if err != nil {
-		return cfg, err
+		return err
 	}
-	if !strings.HasPrefix(*fileName, "/") &&
-		(*fileName != "" && *fileName != "stdout") {
-		*fileName = pwd + "/" + *fileName
+	if !strings.HasPrefix(*filename, "/") &&
+		(*filename != "" && *filename != "stdout") {
+		*filename = pwd + "/" + *filename
 	}
 
-	cfg = Config{
+	Cfg = Config{
 		User:     *mysqlUser,
 		Host:     *mysqlHost,
 		Port:     *mysqlPort,
@@ -111,24 +140,24 @@ func ParseFlag() (Config, error) {
 		Charset:  *mysqlCharset,
 
 		Query: *mysqlQuery,
-		File:  *fileName,
+		File:  *filename,
+		BOM:   *bom,
 	}
 
-	return cfg, err
+	return err
 }
 
 // parseDefaultsExtraFile parse --defaults-extra-file file
-func parseDefaultsExtraFile(file string) (Config, error) {
-	var cfg Config
+func parseDefaultsExtraFile(file string) error {
 	c, err := ini.Load(file)
 	if err != nil {
-		return cfg, err
+		return err
 	}
 
 	// get config from [mysql] section
-	cfg.User = c.Section("client").Key("user").String()
-	cfg.Password = c.Section("client").Key("password").String()
-	cfg.Charset = c.Section("client").Key("default-character-set").String()
+	Cfg.User = c.Section("client").Key("user").String()
+	Cfg.Password = c.Section("client").Key("password").String()
+	Cfg.Charset = c.Section("client").Key("default-character-set").String()
 
-	return cfg, err
+	return err
 }

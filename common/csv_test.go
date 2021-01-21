@@ -5,13 +5,15 @@ import (
 )
 
 func TestSaveRows2CSV(t *testing.T) {
-	rows, err := GetRows(testConfig)
+	Cfg.File = testPath + "/test/TestSaveRows2CSV.csv"
+
+	rows, err := GetRows()
 	if err != nil {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 
-	err = saveRows2CSV(testPath+"/test/1.csv", rows)
+	err = saveRows2CSV(rows)
 	if err != nil {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 }

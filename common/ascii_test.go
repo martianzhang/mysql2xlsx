@@ -3,9 +3,9 @@ package common
 import "testing"
 
 func TestPrintRowsAsASCII(t *testing.T) {
-	rows, err := GetRows(testConfig)
+	rows, err := GetRows()
 	if err != nil {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 
 	printRowsAsASCII(rows)

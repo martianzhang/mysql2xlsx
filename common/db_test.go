@@ -5,8 +5,8 @@ import (
 )
 
 func TestGetRows(t *testing.T) {
-	_, err := GetRows(testConfig)
+	_, err := GetRows()
 	if err != nil {
-		t.Error(err.Error())
+		panic(err.Error())
 	}
 }

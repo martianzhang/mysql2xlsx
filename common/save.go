@@ -11,29 +11,26 @@ import (
 )
 
 // SaveRows ...
-func SaveRows(file string, rows *sql.Rows) error {
+func SaveRows(rows *sql.Rows) error {
 	var err error
 	var suffix string
-	file = strings.TrimSpace(file)
-	if file == "" {
-		suffix = "stdout"
-	} else {
-		tup := strings.Split(file, ".")
-		suffix = strings.ToLower(tup[len(tup)-1])
-	}
+
+	tup := strings.Split(Cfg.File, ".")
+	suffix = strings.ToLower(tup[len(tup)-1])
+
 	switch suffix {
-	case "stdout":
+	case "stdout", "":
 		printRowsAsASCII(rows)
 	case "csv":
-		err = saveRows2CSV(file, rows)
+		err = saveRows2CSV(rows)
 	case "xlsx":
-		err = saveRows2XLSX(file, rows)
+		err = saveRows2XLSX(rows)
 	default:
 		err = errors.New("unknown file extension: " + suffix)
 	}
 
 	if err != nil && suffix != "stdout" {
-		fmt.Println("save result into: ", file)
+		fmt.Println("save result into: ", Cfg.File)
 	}
 
 	return err
