@@ -5,7 +5,8 @@ Save SQL query result into `xlsx`, `csv` file or print as `ascii` table.
 ## Install
 
 ```bash
-go get -u github.com/martianzhang/mysql2xlsx
+git clone github.com/martianzhang/mysql2xlsx
+cd mysql2xlsx && make build
 ```
 
 ## Cross platform compile
@@ -19,9 +20,8 @@ GOOS={GOOS} GOARCH={GOARCH} go build
 ## Example
 
 ```bash
-./mysql2xlsx  -h 127.0.0.1 -P 3306 -d database -u root -f result.xlsx -q "select * from tbl"
+./mysql2xlsx  --host 127.0.0.1 -port 3306 --databasee database --user root --file result.xlsx --query "select * from tbl"
 Password:<hidden input>
-save data into file: '/path/to/mysql2xlsx/result.xlsx'
 ```
 
 ## Get Usage
@@ -29,22 +29,24 @@ save data into file: '/path/to/mysql2xlsx/result.xlsx'
 ```bash
 ./mysql2xlsx --help
 Usage of ./mysql2xlsx:
-  -P string
-        mysql port (default "3306")
-  -c string
+  -bom
+        csv file with UTF8 BOM
+  -charset string
         mysql default charset (default "utf8mb4")
-  -d string
-        mysql database name
+  -database string
+        mysql database name (default "information_schema")
   -defaults-extra-file string
         mysql --defaults-extra-file arg
-  -f string
-        save query result into file, default to stdout
-  -h string
-        mysql host (default "localhost")
-  -p string
+  -file string
+        save query result into file, (default "stdout")
+  -host string
+        mysql host (default "127.0.0.1")
+  -password string
         mysql password
-  -q string
+  -port string
+        mysql port (default "3306")
+  -query string
         select query
-  -u string
+  -user string
         mysql user name
 ```

@@ -113,7 +113,7 @@ cover: test
 test-cli: build
 	@./bin/mysql2xlsx -user root --password 123456 \
 	-query 'select "中文", "english"' \
-	-file test.csv
+	-file test/test-cli.csv
 
 .PHONY: clean
 clean:
