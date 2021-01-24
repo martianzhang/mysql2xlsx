@@ -12,7 +12,7 @@ func TestSaveRows2CSV(t *testing.T) {
 		panic(err.Error())
 	}
 
-	err = saveRows2CSV(rows)
+	err = saveRows2CSV(rows, ',')
 	if err != nil {
 		panic(err.Error())
 	}

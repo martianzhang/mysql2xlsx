@@ -18,6 +18,7 @@ type Config struct {
 	// [mysql] config
 	User     string
 	Host     string
+	Socket   string
 	Port     string
 	Password string
 	Database string
@@ -34,11 +35,12 @@ var Cfg Config
 // ParseFlag parse cmd flags
 func ParseFlag() error {
 
-	mysqlHost := flag.String("host", "127.0.0.1", "mysql host")
-	mysqlUser := flag.String("user", "", "mysql user name")
-	mysqlPassword := flag.String("password", "", "mysql password")
-	mysqlDatabase := flag.String("database", "information_schema", "mysql database name")
-	mysqlPort := flag.String("port", "3306", "mysql port")
+	mysqlHost := flag.String("host", "127.0.0.1", "Connect to host.")
+	mysqlSocket := flag.String("socket", "", "The socket file to use for connection.")
+	mysqlUser := flag.String("user", "", "User for login if not current user.")
+	mysqlPassword := flag.String("password", "", "Password to use when connecting to server. If password is not given it's asked from the tty.")
+	mysqlDatabase := flag.String("database", "information_schema", "Database to use.")
+	mysqlPort := flag.String("port", "3306", "Port number to use for connection.")
 	mysqlCharset := flag.String("charset", "utf8mb4", "mysql default charset")
 	mysqlDefaultsExtraFile := flag.String("defaults-extra-file", "", "mysql --defaults-extra-file arg")
 
@@ -134,6 +136,7 @@ func ParseFlag() error {
 	Cfg = Config{
 		User:     *mysqlUser,
 		Host:     *mysqlHost,
+		Socket:   *mysqlSocket,
 		Port:     *mysqlPort,
 		Password: *mysqlPassword,
 		Database: *mysqlDatabase,

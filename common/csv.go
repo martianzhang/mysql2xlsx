@@ -13,7 +13,7 @@ import (
 var UTF8BOM = []byte{0xEF, 0xBB, 0xBF}
 
 // saveRows2CSV save rows result into csv format file
-func saveRows2CSV(rows *sql.Rows) error {
+func saveRows2CSV(rows *sql.Rows, comma rune) error {
 	file, err := os.Create(Cfg.File)
 	if err != nil {
 		return err
@@ -32,6 +32,7 @@ func saveRows2CSV(rows *sql.Rows) error {
 	}
 
 	w := csv.NewWriter(file)
+	w.Comma = comma
 	defer w.Flush()
 
 	// set table header with column name

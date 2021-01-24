@@ -21,8 +21,12 @@ func SaveRows(rows *sql.Rows) error {
 	switch suffix {
 	case "stdout", "":
 		printRowsAsASCII(rows)
-	case "csv":
-		err = saveRows2CSV(rows)
+	case "tsv", "txt": // tab-separated values
+		err = saveRows2CSV(rows, '\t')
+	case "psv": // pipe-separated values
+		err = saveRows2CSV(rows, '|')
+	case "csv": // comma-separated values
+		err = saveRows2CSV(rows, ',')
 	case "xlsx":
 		err = saveRows2XLSX(rows)
 	default:

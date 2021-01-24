@@ -91,6 +91,11 @@ docker-connect:
 test:
 	@echo "$(CGREEN)Run all test cases ...$(CEND)"
 	go test -timeout 10m -race ./...
+	@if test $(shell git diff --name-only test/ | wc -l | awk '{print $1}') -gt 0; \
+	then \
+		echo "Golden test file checked diff!"; \
+		exit 2; \
+	fi
 	@echo "test Success!"
 
 # Code Coverage
