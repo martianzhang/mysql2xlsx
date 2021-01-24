@@ -30,6 +30,7 @@ type Config struct {
 	BOM   bool   // add BOM file header
 }
 
+// Cfg global config
 var Cfg Config
 
 // ParseFlag parse cmd flags
@@ -94,6 +95,7 @@ func ParseFlag() error {
 		*mysqlPassword = strings.TrimSpace(string(password))
 	}
 
+	// read query interactive
 	if *mysqlQuery == "" {
 		// allow line separator, sql end with ';'
 		fmt.Println("Query (end with '; + <Enter>'):")
@@ -109,12 +111,13 @@ func ParseFlag() error {
 				break
 			}
 		}
-	} else {
-		if _, err := os.Stat(*mysqlQuery); err == nil {
-			buf, err := ioutil.ReadFile(*mysqlQuery)
-			if err == nil {
-				*mysqlQuery = string(buf)
-			}
+	}
+
+	// test read from file
+	if _, err := os.Stat(*mysqlQuery); err == nil {
+		buf, err := ioutil.ReadFile(*mysqlQuery)
+		if err == nil {
+			*mysqlQuery = string(buf)
 		}
 	}
 

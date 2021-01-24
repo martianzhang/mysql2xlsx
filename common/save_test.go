@@ -8,6 +8,8 @@ func TestSaveRows(t *testing.T) {
 	files := []string{
 		"stdout",
 		testPath + "/test/TestSaveRows.csv",
+		testPath + "/test/TestSaveRows.tsv",
+		testPath + "/test/TestSaveRows.psv",
 		testPath + "/test/TestSaveRows.xlsx",
 	}
 

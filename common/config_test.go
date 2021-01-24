@@ -23,7 +23,7 @@ func init() {
 		Database: "information_schema",
 		Charset:  "utf8mb4",
 
-		Query: "select 'test'",
+		Query: "select 'test', '中文'",
 	}
 }
 

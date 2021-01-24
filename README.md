@@ -34,19 +34,21 @@ Usage of ./mysql2xlsx:
   -charset string
         mysql default charset (default "utf8mb4")
   -database string
-        mysql database name (default "information_schema")
+        Database to use. (default "information_schema")
   -defaults-extra-file string
         mysql --defaults-extra-file arg
   -file string
         save query result into file, (default "stdout")
   -host string
-        mysql host (default "127.0.0.1")
+        Connect to host. (default "127.0.0.1")
   -password string
-        mysql password
+        Password to use when connecting to server. If password is not given it's asked from the tty.
   -port string
-        mysql port (default "3306")
+        Port number to use for connection. (default "3306")
   -query string
         select query
+  -socket string
+        The socket file to use for connection.
   -user string
-        mysql user name
+        User for login if not current user.
 ```
