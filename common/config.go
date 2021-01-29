@@ -25,9 +25,10 @@ type Config struct {
 	Charset  string
 
 	// other config
-	Query string // select query
-	File  string // storage file abs path
-	BOM   bool   // add BOM file header
+	Query   string // select query
+	File    string // storage file abs path
+	BOM     bool   // add BOM file header
+	Preview int    // preview xlsx file, print first N lines
 }
 
 // Cfg global config
@@ -53,7 +54,15 @@ func ParseFlag() error {
 	} else {
 		*bom = true
 	}
+	previewXLSX := flag.Int("preview", 0, "preview xlsx file, print first N lines")
+
 	flag.Parse()
+
+	if *previewXLSX != 0 && *filename != "" {
+		Cfg.File = *filename
+		Cfg.Preview = *previewXLSX
+		return nil
+	}
 
 	if *mysqlDefaultsExtraFile != "" {
 		err := parseDefaultsExtraFile(*mysqlDefaultsExtraFile)

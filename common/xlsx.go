@@ -59,5 +59,32 @@ func saveRows2XLSX(rows *sql.Rows) error {
 	}
 
 	// save to file
-	return file.Save(Cfg.File)
+	err = file.Save(Cfg.File)
+
+	// preview xlsx file
+	if Cfg.Preview > 0 {
+		err = previewXlsx()
+	}
+	return err
+}
+
+// PreviewXlsx ...
+func previewXlsx() error {
+	wb, err := xlsx.OpenFile(Cfg.File)
+	if err != nil {
+		return err
+	}
+
+	for _, sh := range wb.Sheets {
+		for l, row := range sh.Rows {
+			for _, cell := range row.Cells {
+				fmt.Print(cell.Value, "\t")
+			}
+			fmt.Println()
+			if l > 10 {
+				break
+			}
+		}
+	}
+	return nil
 }

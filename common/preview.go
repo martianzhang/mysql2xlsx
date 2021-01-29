@@ -1,16 +1,12 @@
 package common
 
 import (
-	"database/sql"
 	"errors"
 	"strings"
-
-	// "database/sql"
-	_ "github.com/go-sql-driver/mysql"
 )
 
-// SaveRows ...
-func SaveRows(rows *sql.Rows) error {
+// Preview preview export file
+func Preview() error {
 	var err error
 	var suffix string
 
@@ -19,15 +15,14 @@ func SaveRows(rows *sql.Rows) error {
 
 	switch suffix {
 	case "stdout", "":
-		printRowsAsASCII(rows)
 	case "tsv", "txt": // tab-separated values
-		err = saveRows2CSV(rows, '\t')
+		err = previewCSV() // TODO:
 	case "psv": // pipe-separated values
-		err = saveRows2CSV(rows, '|')
+		err = previewCSV() // TODO:
 	case "csv": // comma-separated values
-		err = saveRows2CSV(rows, ',')
+		err = previewCSV()
 	case "xlsx":
-		err = saveRows2XLSX(rows)
+		err = previewXlsx()
 	default:
 		err = errors.New("unknown file extension: " + suffix)
 	}

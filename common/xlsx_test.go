@@ -17,3 +17,11 @@ func TestSaveRows2ELSX(t *testing.T) {
 		panic(err.Error())
 	}
 }
+
+func TestPreviewXlsxFile(t *testing.T) {
+	Cfg.File = testPath + "/test/TestSaveRows2ELSX.xlsx"
+	err := previewXlsx()
+	if err != nil {
+		panic(err.Error())
+	}
+}

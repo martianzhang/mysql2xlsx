@@ -1,8 +1,10 @@
 package common
 
 import (
+	"bufio"
 	"database/sql"
 	"encoding/csv"
+	"fmt"
 	"os"
 
 	// "database/sql"
@@ -66,4 +68,24 @@ func saveRows2CSV(rows *sql.Rows, comma rune) error {
 		w.Write(values)
 	}
 	return err
+}
+
+func previewCSV() error {
+	fd, err := os.Open(Cfg.File)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+
+	var line int
+	s := bufio.NewScanner(fd)
+	for s.Scan() {
+		if line > Cfg.Preview {
+			break
+		}
+		fmt.Println(s.Text())
+		line++
+	}
+
+	return s.Err()
 }

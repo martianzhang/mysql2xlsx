@@ -16,6 +16,15 @@ func main() {
 		panic(err.Error())
 	}
 
+	// xlsx file preview
+	if common.Cfg.Preview != 0 {
+		err = common.Preview()
+		if err != nil {
+			panic(err.Error())
+		}
+		return
+	}
+
 	// execute sql and get all result rows
 	rows, err := common.GetRows()
 	if err != nil {
