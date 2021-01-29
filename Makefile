@@ -125,7 +125,10 @@ test-cli: build
 	# test csv
 	@./bin/mysql2xlsx -user root --password 123456 \
 	-query 'select "中文", "english"' \
-	-file test/test-cli.xlsx
+	-file test/test-cli.csv
+
+	# test preview
+	@./bin/mysql2xlsx -preview 10 -file test/test-cli.xlsx
 
 .PHONY: clean
 clean:
