@@ -32,6 +32,7 @@ func saveRows2XLSX(rows *sql.Rows) error {
 		return fmt.Errorf("excel max columns(%d) exceeded", ExcelMaxColumns)
 	}
 	sheetHeader := sheet.AddRow()
+	sheetHeader.SetHeight(12.5) // https://github.com/tealeg/xlsx/issues/647
 	for _, name := range columns {
 		cell := sheetHeader.AddCell()
 		cell.Value = name
@@ -49,6 +50,7 @@ func saveRows2XLSX(rows *sql.Rows) error {
 		}
 		rows.Scan(scanArgs...)
 		sheetRow := sheet.AddRow()
+		sheetRow.SetHeight(12.5) // https://github.com/tealeg/xlsx/issues/647
 		for _, v := range values {
 			cell := sheetRow.AddCell()
 			if len(v) > ExcelMaxCellChars {
