@@ -116,6 +116,13 @@ cover: test
 
 .PHONY: test-cli
 test-cli: build
+	# test xlsx
+	@./bin/mysql2xlsx -user root --password 123456 \
+	-query 'select "中文", "english"' \
+	-preview 10 \
+	-file test/test-cli.xlsx
+
+	# test csv
 	@./bin/mysql2xlsx -user root --password 123456 \
 	-query 'select "中文", "english"' \
 	-file test/test-cli.xlsx
