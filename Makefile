@@ -117,15 +117,19 @@ cover: test
 .PHONY: test-cli
 test-cli: build
 	# test xlsx
-	@./bin/mysql2xlsx -user root --password 123456 \
+	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"' \
 	-preview 10 \
 	-file test/test-cli.xlsx
 
 	# test csv
-	@./bin/mysql2xlsx -user root --password 123456 \
+	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"' \
 	-file test/test-cli.csv
+
+	# test ascii
+	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
+	-query 'select "中文", "english"'
 
 	# test preview
 	@./bin/mysql2xlsx -preview 10 -file test/test-cli.xlsx

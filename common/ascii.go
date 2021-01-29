@@ -29,7 +29,13 @@ func printRowsAsASCII(rows *sql.Rows) {
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
+	var line int
 	for rows.Next() {
+		// preview only show first N lines
+		if line++; Cfg.Preview != 0 && line > Cfg.Preview {
+			break
+		}
+
 		columns := make([]sql.NullString, len(columns))
 		cols := make([]interface{}, len(columns))
 		for i := range columns {
