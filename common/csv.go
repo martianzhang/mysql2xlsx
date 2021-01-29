@@ -93,7 +93,7 @@ func previewCSV() error {
 	var line int
 	s := bufio.NewScanner(fd)
 	for s.Scan() {
-		if line > Cfg.Preview {
+		if line >= Cfg.Preview {
 			break
 		}
 		fmt.Println(s.Text())

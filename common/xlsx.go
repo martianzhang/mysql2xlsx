@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/tealeg/xlsx"
+	"github.com/tealeg/xlsx/v3"
 )
 
 // Excel limits
@@ -77,21 +77,24 @@ func previewXlsx() error {
 		return nil
 	}
 
-	wb, err := xlsx.OpenFile(Cfg.File)
+	opts := xlsx.RowLimit(Cfg.Preview)
+	wb, err := xlsx.OpenFile(Cfg.File, opts)
 	if err != nil {
 		return err
 	}
 
 	for _, sh := range wb.Sheets {
-		for l, row := range sh.Rows {
-			for _, cell := range row.Cells {
-				fmt.Print(cell.Value, "\t")
+		for i := 0; i < Cfg.Preview && i < sh.MaxRow; i++ {
+			row, err := sh.Row(i)
+			if err != nil {
+				return err
 			}
-			fmt.Println()
-			if l > 10 {
-				break
+			for j := 0; j < sh.MaxCol; j++ {
+				fmt.Print(row.GetCell(j), "\t")
 			}
+			fmt.Println() // add line feed
 		}
+		break
 	}
 	return nil
 }
