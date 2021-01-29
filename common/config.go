@@ -54,15 +54,8 @@ func ParseFlag() error {
 	} else {
 		*bom = true
 	}
-	previewXLSX := flag.Int("preview", 0, "preview xlsx file, print first N lines")
-
+	preview := flag.Int("preview", 0, "preview result file, print first N lines")
 	flag.Parse()
-
-	if *previewXLSX != 0 && *filename != "" {
-		Cfg.File = *filename
-		Cfg.Preview = *previewXLSX
-		return nil
-	}
 
 	if *mysqlDefaultsExtraFile != "" {
 		err := parseDefaultsExtraFile(*mysqlDefaultsExtraFile)
@@ -71,9 +64,23 @@ func ParseFlag() error {
 		}
 	}
 
+	*filename = strings.TrimSpace(*filename)
+	if *filename == "" {
+		*filename = "stdout"
+	}
+	Cfg.File = *filename
+
 	if Cfg.User != "" {
 		*mysqlUser = Cfg.User
 	}
+
+	if *preview != 0 {
+		Cfg.Preview = *preview
+		if *mysqlUser == "" {
+			return nil
+		}
+	}
+
 	if *mysqlUser == "" {
 		flag.PrintDefaults()
 		os.Exit(0)
@@ -130,11 +137,6 @@ func ParseFlag() error {
 		}
 	}
 
-	*filename = strings.TrimSpace(*filename)
-	if *filename == "" {
-		*filename = "stdout"
-	}
-
 	// use abs path
 	pwd, err := os.Getwd()
 	if err != nil {
@@ -154,9 +156,10 @@ func ParseFlag() error {
 		Database: *mysqlDatabase,
 		Charset:  *mysqlCharset,
 
-		Query: *mysqlQuery,
-		File:  *filename,
-		BOM:   *bom,
+		Query:   *mysqlQuery,
+		File:    *filename,
+		BOM:     *bom,
+		Preview: *preview,
 	}
 
 	return err

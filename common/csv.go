@@ -67,10 +67,23 @@ func saveRows2CSV(rows *sql.Rows, comma rune) error {
 		}
 		w.Write(values)
 	}
+
+	if err != nil {
+		return err
+	}
+
+	// preview file
+	if Cfg.Preview > 0 {
+		err = previewCSV()
+	}
 	return err
 }
 
 func previewCSV() error {
+	if Cfg.Preview == 0 {
+		return nil
+	}
+
 	fd, err := os.Open(Cfg.File)
 	if err != nil {
 		return err

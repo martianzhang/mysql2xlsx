@@ -29,7 +29,7 @@ func SaveRows(rows *sql.Rows) error {
 	case "xlsx":
 		err = saveRows2XLSX(rows)
 	default:
-		err = errors.New("unknown file extension: " + suffix)
+		err = errors.New("not support extension: " + suffix)
 	}
 
 	return err

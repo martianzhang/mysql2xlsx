@@ -17,3 +17,11 @@ func TestSaveRows2CSV(t *testing.T) {
 		panic(err.Error())
 	}
 }
+
+func TestPreviewCSV(t *testing.T) {
+	Cfg.File = testPath + "/test/TestSaveRows2CSV.csv"
+	err := previewCSV()
+	if err != nil {
+		panic(err.Error())
+	}
+}

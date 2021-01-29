@@ -15,16 +15,12 @@ func Preview() error {
 
 	switch suffix {
 	case "stdout", "":
-	case "tsv", "txt": // tab-separated values
-		err = previewCSV() // TODO:
-	case "psv": // pipe-separated values
-		err = previewCSV() // TODO:
-	case "csv": // comma-separated values
+	case "csv", "psv", "tsv", "txt":
 		err = previewCSV()
 	case "xlsx":
 		err = previewXlsx()
 	default:
-		err = errors.New("unknown file extension: " + suffix)
+		err = errors.New("not support extension: " + suffix)
 	}
 
 	return err

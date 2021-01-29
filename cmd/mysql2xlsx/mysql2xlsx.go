@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"runtime"
 
 	"mysql2xlsx/common"
@@ -17,12 +18,14 @@ func main() {
 	}
 
 	// xlsx file preview
-	if common.Cfg.Preview != 0 {
-		err = common.Preview()
-		if err != nil {
-			panic(err.Error())
+	if common.Cfg.Preview != 0 && common.Cfg.File != "" {
+		if _, err = os.Stat(common.Cfg.File); err == nil {
+			err = common.Preview()
+			if err != nil {
+				panic(err.Error())
+			}
+			return
 		}
-		return
 	}
 
 	// execute sql and get all result rows

@@ -60,6 +60,9 @@ func saveRows2XLSX(rows *sql.Rows) error {
 
 	// save to file
 	err = file.Save(Cfg.File)
+	if err != nil {
+		return err
+	}
 
 	// preview xlsx file
 	if Cfg.Preview > 0 {
@@ -70,6 +73,10 @@ func saveRows2XLSX(rows *sql.Rows) error {
 
 // PreviewXlsx ...
 func previewXlsx() error {
+	if Cfg.Preview == 0 {
+		return nil
+	}
+
 	wb, err := xlsx.OpenFile(Cfg.File)
 	if err != nil {
 		return err
