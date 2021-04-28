@@ -24,11 +24,6 @@ func printRowsAsASCII(rows *sql.Rows) {
 	table.SetHeader(columns)
 
 	// set every rows
-	scanArgs := make([]interface{}, len(columns))
-	values := make([][]byte, len(columns))
-	for i := range values {
-		scanArgs[i] = &values[i]
-	}
 	var line int
 	for rows.Next() {
 		// preview only show first N lines

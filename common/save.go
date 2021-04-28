@@ -28,6 +28,8 @@ func SaveRows(rows *sql.Rows) error {
 		err = saveRows2CSV(rows, ',')
 	case "xlsx":
 		err = saveRows2XLSX(rows)
+	case "sql":
+		err = saveRows2SQL(rows)
 	default:
 		err = errors.New("not support extension: " + suffix)
 	}

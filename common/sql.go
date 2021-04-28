@@ -3,48 +3,35 @@ package common
 import (
 	"bufio"
 	"database/sql"
-	"encoding/csv"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
 
 	// "database/sql"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-// UTF8BOM BOM HEADER
-var UTF8BOM = []byte{0xEF, 0xBB, 0xBF}
-
-// saveRows2CSV save rows result into csv format file
-func saveRows2CSV(rows *sql.Rows, comma rune) error {
+// saveRows2SQL save rows result into sql file
+func saveRows2SQL(rows *sql.Rows) error {
 	file, err := os.Create(Cfg.File)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	// 兼容 Windows 系统，文件头写入 UTF8 BOM，防止中文乱码。
-	// windows 环境下导出的 csv 文件默认添加 UTF8 BOM。
-	// 添加 BOM 对 less, awk 等 *nix 系统命令并不友好，因此仅对特定的文件名生效。
-	// Linux 环境删除文件 UTF8 BOM 头命令：dos2unix xxx.csv
-	if Cfg.BOM {
-		_, err = file.Write(UTF8BOM)
-		if err != nil {
-			return err
-		}
-	}
+	// get table name
+	tableName := strings.Split(filepath.Base(Cfg.File), ".")[0]
 
-	w := csv.NewWriter(file)
-	w.Comma = comma
-	defer w.Flush()
-
-	// set table header with column name
+	// get column name
 	columns, err := rows.Columns()
 	if err != nil {
 		return err
 	}
-	w.Write(columns)
 
-	// set every table rows
+	// write every row into sql
+	w := bufio.NewWriter(file)
 	for rows.Next() {
 		columns := make([]sql.NullString, len(columns))
 		cols := make([]interface{}, len(columns))
@@ -58,19 +45,32 @@ func saveRows2CSV(rows *sql.Rows, comma rune) error {
 
 		values := make([]string, len(columns))
 		for i, col := range columns {
-			values[i] = col.String
+			if !col.Valid {
+				values[i] = "NULL"
+			} else {
+				values[i] = strconv.Quote(col.String)
+			}
+			// hex-blob
+			// values[i] = strconv.Quote(fmt.Sprintf("%x", col))
 		}
-		w.Write(values)
+		if _, err := w.WriteString(
+			fmt.Sprintf("INSERT INTO TO `%s` VALUES (%s);\n",
+				tableName, strings.Join(values, ", "))); err != nil {
+			return err
+		}
 	}
-
+	err = w.Flush()
+	if err != nil {
+		return err
+	}
 	// preview file
 	if Cfg.Preview > 0 {
-		err = previewCSV()
+		err = previewSQL()
 	}
 	return err
 }
 
-func previewCSV() error {
+func previewSQL() error {
 	if Cfg.Preview == 0 {
 		return nil
 	}

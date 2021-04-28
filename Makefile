@@ -116,6 +116,12 @@ cover: test
 
 .PHONY: test-cli
 test-cli: build
+	# test sql
+	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
+	-query 'select "中文", "english", 1, 0.4, NULL, "NULL"' \
+	-file test/test-cli.sql \
+	-preview 10
+
 	# test xlsx
 	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"' \
@@ -125,6 +131,7 @@ test-cli: build
 	# test csv
 	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"' \
+	-preview 10 \
 	-file test/test-cli.csv
 
 	# test ascii

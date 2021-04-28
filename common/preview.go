@@ -19,6 +19,8 @@ func Preview() error {
 		err = previewCSV()
 	case "xlsx":
 		err = previewXlsx()
+	case "sql":
+		err = previewSQL()
 	default:
 		err = errors.New("not support extension: " + suffix)
 	}
