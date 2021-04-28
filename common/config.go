@@ -25,10 +25,11 @@ type Config struct {
 	Charset  string
 
 	// other config
-	Query   string // select query
-	File    string // storage file abs path
-	BOM     bool   // add BOM file header
-	Preview int    // preview xlsx file, print first N lines
+	Query            string // select query
+	File             string // storage file abs path
+	BOM              bool   // add BOM file header
+	ExcelMaxFileSize int    // excel file max size
+	Preview          int    // preview xlsx file, print first N lines
 }
 
 // Cfg global config
@@ -48,12 +49,15 @@ func ParseFlag() error {
 
 	mysqlQuery := flag.String("query", "", "select query")
 	filename := flag.String("file", "", `save query result into file, (default "stdout")`)
+	// 防止 windows 环境下中文 utf8 乱码
 	var bom *bool
 	if runtime.GOOS != "windows" {
 		bom = flag.Bool("bom", false, "csv file with UTF8 BOM")
 	} else {
 		*bom = true
 	}
+	// 防止 excel 导出内存过大程序 OOM，超大文件建议使用 csv 格式导出
+	excelMaxFileSize := flag.Int("excel-max-file-size", 10485760, "excel max file size, limit by memory")
 	preview := flag.Int("preview", 0, "preview result file, print first N lines")
 	flag.Parse()
 
@@ -156,10 +160,11 @@ func ParseFlag() error {
 		Database: *mysqlDatabase,
 		Charset:  *mysqlCharset,
 
-		Query:   *mysqlQuery,
-		File:    *filename,
-		BOM:     *bom,
-		Preview: *preview,
+		Query:            *mysqlQuery,
+		File:             *filename,
+		BOM:              *bom,
+		ExcelMaxFileSize: *excelMaxFileSize,
+		Preview:          *preview,
 	}
 
 	return err

@@ -44,9 +44,14 @@ func saveRows2XLSX(rows *sql.Rows) error {
 	for i := range values {
 		scanArgs[i] = &values[i]
 	}
+
+	var bufSize int
 	for i := 1; rows.Next(); i++ {
 		if i > ExcelMaxRows {
 			return fmt.Errorf("excel max rows(%d) exceeded", ExcelMaxRows)
+		}
+		if bufSize > Cfg.ExcelMaxFileSize {
+			return fmt.Errorf("excel max file size(%d) exceeded", Cfg.ExcelMaxFileSize)
 		}
 		rows.Scan(scanArgs...)
 		sheetRow := sheet.AddRow()
@@ -57,6 +62,7 @@ func saveRows2XLSX(rows *sql.Rows) error {
 				return fmt.Errorf("excel max cell characters(%d) exceeded", ExcelMaxCellChars)
 			}
 			cell.Value = string(v)
+			bufSize += len(cell.Value)
 		}
 	}
 

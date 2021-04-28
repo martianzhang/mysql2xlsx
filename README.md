@@ -36,6 +36,8 @@ Password:<hidden input>
     	Database to use. (default "information_schema")
   -defaults-extra-file string
     	mysql --defaults-extra-file arg
+  -excel-max-file-size int
+      excel max file size, limit by memory (default 10485760)
   -file string
     	save query result into file, (default "stdout")
   -host string
