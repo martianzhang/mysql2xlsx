@@ -1,1 +1,1 @@
-INSERT INTO TO `TestSaveRows2SQL` VALUES ("test", "中文");
+INSERT INTO `TestSaveRows2SQL` VALUES ("test", "中文");

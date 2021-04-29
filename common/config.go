@@ -41,7 +41,7 @@ func ParseFlag() error {
 	mysqlHost := flag.String("host", "127.0.0.1", "Connect to host.")
 	mysqlSocket := flag.String("socket", "", "The socket file to use for connection.")
 	mysqlUser := flag.String("user", "", "User for login if not current user.")
-	mysqlPassword := flag.String("password", "", "Password to use when connecting to server. If password is not given it's asked from the tty.")
+	mysqlPassword := flag.String("password", "", "Password to use when connecting to server. If password is not given it will read from tty.")
 	mysqlDatabase := flag.String("database", "information_schema", "Database to use.")
 	mysqlPort := flag.String("port", "3306", "Port number to use for connection.")
 	mysqlCharset := flag.String("charset", "utf8mb4", "mysql default charset")
