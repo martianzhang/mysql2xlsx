@@ -54,7 +54,7 @@ func saveRows2SQL(rows *sql.Rows) error {
 			// values[i] = strconv.Quote(fmt.Sprintf("%x", col))
 		}
 		if _, err := w.WriteString(
-			fmt.Sprintf("INSERT INTO TO `%s` VALUES (%s);\n",
+			fmt.Sprintf("INSERT INTO `%s` VALUES (%s);\n",
 				tableName, strings.Join(values, ", "))); err != nil {
 			return err
 		}

@@ -66,6 +66,7 @@ docker-mysql:
 	@docker run --name xlsx-mysql --rm -d \
 	-e MYSQL_ROOT_PASSWORD=123456 \
 	-e MYSQL_DATABASE=test \
+	-v `pwd`/test/init.sql.gz:/docker-entrypoint-initdb.d/init.sql.gz \
 	-p 3306:3306 \
 	$(MYSQL_RELEASE):$(MYSQL_VERSION)
 
@@ -85,6 +86,7 @@ docker-mysql:
 .PHONY: docker-connect
 docker-connect:
 	@docker exec -it xlsx-mysql mysql --user=root --password=123456 --host "127.0.0.1" test
+	#docker exec -i xlsx-mysql mysql --user=root --password=123456 --host "127.0.0.1" test -f < ./test.sql
 
 # Run golang test cases
 .PHONY: test
