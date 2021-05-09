@@ -84,6 +84,6 @@ mysql2xlsx --defaults-extra-file my.cnf -query "select 1" -file test.csv --previ
 
 ## Limitation
 
-* Not full compatible with `BLOB`, `BINARY`, `VARBINARY`, because these types can store raw bytes data. If you only store case sensitive string these columns, it should be no problem.
+* Not full compatible with `BLOB`, `BINARY`, `VARBINARY` data types, because these types can store raw data, souch as pictures, videos. If only case sensitive string was stored in these columns, there should be no problem.
 * Not support spatial data types, eg. `GEOMETRY`, `POINT`, `LINESTRING`, `POLYGON`, `MULTIPOINT`, `MULTILINESTRING`, `MULTIPOLYGON`, `GEOMETRYCOLLECTION`.
-* Excel file size must not too large. Other Excel limitation please search by `Excel specifications and limits`.
+* Excel file size must not too large. Other Excel limitation please search using key word: `Excel specifications and limits`.
