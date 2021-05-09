@@ -10,6 +10,6 @@ require (
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/tealeg/xlsx/v3 v3.2.3
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
-	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
+	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c
 	gopkg.in/ini.v1 v1.62.0
 )

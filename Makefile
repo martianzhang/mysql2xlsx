@@ -123,31 +123,32 @@ test-cli: build
 	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english", 1, 0.4, NULL, "NULL"' \
 	-file test/test-cli.sql
+	@./bin/mysql2xlsx -preview 10 -file test/test-cli.sql
 
 	# test xlsx
 	@rm -f test/test-cli.xlsx
 	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"' \
 	-file test/test-cli.xlsx
+	@./bin/mysql2xlsx -preview 10 -file test/test-cli.xlsx
 
 	# test csv
 	@rm -f test/test-cli.csv
 	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"' \
 	-file test/test-cli.csv
+	@./bin/mysql2xlsx -preview 10 -file test/test-cli.csv
 
 	# test txt
 	@rm -f test/test-cli.txt
 	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"' \
 	-file test/test-cli.txt
+	@./bin/mysql2xlsx -preview 10 -file test/test-cli.txt
 
 	# test ascii
 	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"'
-
-	# test preview
-	@./bin/mysql2xlsx -preview 10 -file test/test-cli.xlsx
 
 .PHONY: clean
 clean:

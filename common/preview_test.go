@@ -12,6 +12,22 @@ func TestPreview(t *testing.T) {
 		testPath + "/test/TestSaveRows.psv",
 		testPath + "/test/TestSaveRows.xlsx",
 	}
+
+	// generate files first
+	for _, file := range files {
+		Cfg.File = file
+		rows, err := GetRows()
+		if err != nil {
+			panic(err.Error())
+		}
+
+		err = SaveRows(rows)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	// preview files
 	oldPreview := Cfg.Preview
 	Cfg.Preview = 10
 	for _, file := range files {

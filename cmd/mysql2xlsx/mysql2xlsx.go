@@ -3,13 +3,16 @@ package main
 import (
 	"os"
 	"runtime"
+	"syscall"
 
 	"mysql2xlsx/common"
+
+	"golang.org/x/sys/unix"
 )
 
 func main() {
-	// limit cpu usage
-	runtime.GOMAXPROCS(1)
+	// limit cpu, memory usage
+	resourceLimit()
 
 	// parse config
 	err := common.ParseFlag()
@@ -36,6 +39,21 @@ func main() {
 
 	// save rows result
 	err = common.SaveRows(rows)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func resourceLimit() {
+	// limit cpu usage
+	runtime.GOMAXPROCS(1) // 1 core
+
+	// ulimit -Sv, virtual memory
+	var maxVirtualMemoryBytes uint64 = 1024 * 1024 * 1024 // 1GB
+	err := unix.Setrlimit(syscall.RLIMIT_AS, &unix.Rlimit{
+		Cur: maxVirtualMemoryBytes,
+		Max: maxVirtualMemoryBytes,
+	})
 	if err != nil {
 		panic(err.Error())
 	}
