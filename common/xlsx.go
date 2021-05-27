@@ -46,12 +46,17 @@ func saveRows2XLSX(rows *sql.Rows) error {
 	}
 
 	var bufSize int
+
 	for i := 1; rows.Next(); i++ {
 		if i > ExcelMaxRows {
 			return fmt.Errorf("excel max rows(%d) exceeded", ExcelMaxRows)
 		}
 		if bufSize > Cfg.ExcelMaxFileSize {
 			return fmt.Errorf("excel max file size(%d) exceeded", Cfg.ExcelMaxFileSize)
+		}
+		// limit return rows
+		if Cfg.Limit != 0 && i > Cfg.Limit {
+			break
 		}
 		rows.Scan(scanArgs...)
 		sheetRow := sheet.AddRow()

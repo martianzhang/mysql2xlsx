@@ -24,10 +24,14 @@ func printRowsAsASCII(rows *sql.Rows) {
 	table.SetHeader(columns)
 
 	// set every rows
-	var line int
-	for rows.Next() {
+	for i := 1; rows.Next(); i++ {
 		// preview only show first N lines
-		if line++; Cfg.Preview != 0 && line > Cfg.Preview {
+		if Cfg.Preview != 0 && i > Cfg.Preview {
+			break
+		}
+
+		// limit return rows
+		if Cfg.Limit != 0 && i > Cfg.Limit {
 			break
 		}
 

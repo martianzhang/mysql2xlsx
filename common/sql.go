@@ -32,7 +32,12 @@ func saveRows2SQL(rows *sql.Rows) error {
 
 	// write every row into sql
 	w := bufio.NewWriter(file)
-	for rows.Next() {
+	for i := 1; rows.Next(); i++ {
+		// limit return rows
+		if Cfg.Limit != 0 && i > Cfg.Limit {
+			break
+		}
+
 		columns := make([]sql.NullString, len(columns))
 		cols := make([]interface{}, len(columns))
 		for i := range columns {

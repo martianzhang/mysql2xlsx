@@ -30,6 +30,7 @@ type Config struct {
 	BOM              bool   // add BOM file header
 	ExcelMaxFileSize int    // excel file max size
 	Preview          int    // preview xlsx file, print first N lines
+	Limit            int    // mysql result lines limit
 }
 
 // Cfg global config
@@ -49,6 +50,7 @@ func ParseFlag() error {
 
 	mysqlQuery := flag.String("query", "", "select query")
 	filename := flag.String("file", "", `save query result into file, (default "stdout")`)
+	mysqlLimit := flag.Int("limit", 0, "mysql result lines limit")
 	// 防止 windows 环境下中文 utf8 乱码
 	var bom *bool
 	if runtime.GOOS != "windows" {
@@ -100,10 +102,6 @@ func ParseFlag() error {
 
 	if !strings.HasPrefix(strings.ToLower(*mysqlCharset), "utf") {
 		*bom = false
-	}
-
-	if Cfg.Query != "" {
-		*mysqlQuery = Cfg.Query
 	}
 
 	if *mysqlPassword == "" {
@@ -165,6 +163,7 @@ func ParseFlag() error {
 		BOM:              *bom,
 		ExcelMaxFileSize: *excelMaxFileSize,
 		Preview:          *preview,
+		Limit:            *mysqlLimit,
 	}
 
 	return err

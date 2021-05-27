@@ -150,6 +150,10 @@ test-cli: build
 	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
 	-query 'select "中文", "english"'
 
+	# test limit
+	@./bin/mysql2xlsx --defaults-extra-file test/my.cnf \
+	-query "show tables" --limit 2
+
 .PHONY: clean
 clean:
 	git clean -x -f

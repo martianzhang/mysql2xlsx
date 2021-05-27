@@ -45,7 +45,12 @@ func saveRows2CSV(rows *sql.Rows, comma rune) error {
 	w.Write(columns)
 
 	// set every table rows
-	for rows.Next() {
+	for i := 1; rows.Next(); i++ {
+		// limit return rows
+		if Cfg.Limit != 0 && i > Cfg.Limit {
+			break
+		}
+
 		columns := make([]sql.NullString, len(columns))
 		cols := make([]interface{}, len(columns))
 		for i := range columns {
